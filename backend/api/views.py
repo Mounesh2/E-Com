@@ -77,7 +77,10 @@ class ProfileView(views.APIView):
 
 
 class ItemListView(views.APIView):
-    permission_classes = [permissions.AllowAny]
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]
 
     def get(self, request):
         queryset = Item.objects.all()
@@ -103,14 +106,37 @@ class ItemListView(views.APIView):
         serializer = ItemSerializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def post(self, request):
+        serializer = ItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class ItemDetailView(views.APIView):
-    permission_classes = [permissions.AllowAny]
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]
 
     def get(self, request, pk):
         item = get_object_or_404(Item, id=pk)
         serializer = ItemSerializer(item)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, pk):
+        item = get_object_or_404(Item, id=pk)
+        serializer = ItemSerializer(item, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        item = get_object_or_404(Item, id=pk)
+        item.delete()
+        return Response({"success": True, "message": "Item deleted successfully"}, status=status.HTTP_200_OK)
 
 
 class CartView(views.APIView):

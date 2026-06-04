@@ -7,15 +7,16 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'fullName', 'phone', 'address', 'memberSince')
+        fields = ('id', 'email', 'fullName', 'phone', 'address', 'memberSince', 'is_staff')
 
 
 class UserSignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    is_staff = serializers.BooleanField(default=False, required=False)
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'fullName', 'phone', 'address')
+        fields = ('email', 'password', 'fullName', 'phone', 'address', 'is_staff')
 
     def validate_email(self, value):
         if not value.endswith('@gmail.com'):
@@ -49,6 +50,9 @@ class UserSignupSerializer(serializers.ModelSerializer):
             phone=validated_data['phone'],
             address=validated_data.get('address', 'Address not provided')
         )
+        if validated_data.get('is_staff'):
+            user.is_staff = True
+            user.save()
         return user
 
 

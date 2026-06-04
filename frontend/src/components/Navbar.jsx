@@ -129,6 +129,17 @@ export default function Navbar({
                 <div className="nav-right">
                     {user ? (
                         <div className="nav-user-actions">
+                            {/* Admin action */}
+                            {user && user.is_staff && (
+                                <div 
+                                    className="nav-action-item" 
+                                    onClick={(e) => handlePageNavigation('admin', e)}
+                                >
+                                    <span className="nav-action-icon">⚙️</span>
+                                    <span>Admin</span>
+                                </div>
+                            )}
+
                             {/* Profile action */}
                             <div 
                                 className="nav-action-item" 
@@ -202,6 +213,9 @@ export default function Navbar({
                             <li><a href="#" onClick={(e) => handleNavCategoryClick('Electronics', e)}>Home & Living</a></li>
                             <li><a href="#" onClick={(e) => handlePageNavigation('profile', e)}>My Profile</a></li>
                             <li><a href="#" onClick={(e) => handlePageNavigation('cart', e)}>My Bag ({cartCount})</a></li>
+                            {user && user.is_staff && (
+                                <li><a href="#" onClick={(e) => handlePageNavigation('admin', e)}>Admin Control</a></li>
+                            )}
                         </ul>
                         <div className="mobile-nav-buttons">
                             <button onClick={onLogout}>Logout</button>

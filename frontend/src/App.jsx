@@ -10,6 +10,7 @@ import ProfilePage from './pages/ProfilePage';
 import WishlistPage from './pages/WishlistPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import AdminPage from './pages/AdminPage';
 
 export default function App() {
     const [token, setToken] = useState(() => localStorage.getItem('token'));
@@ -36,19 +37,20 @@ export default function App() {
         setSearchQuery('');
     }
 
+    const loadItems = async () => {
+        try {
+            const response = await fetch('http://localhost:8000/api/items');
+            if (response.ok) {
+                const data = await response.json();
+                setItems(data);
+            }
+        } catch (error) {
+            console.error('Error fetching items:', error);
+        }
+    };
+
     // Load catalog items once on mount
     useEffect(() => {
-        const loadItems = async () => {
-            try {
-                const response = await fetch('http://localhost:8000/api/items');
-                if (response.ok) {
-                    const data = await response.json();
-                    setItems(data);
-                }
-            } catch (error) {
-                console.error('Error fetching items:', error);
-            }
-        };
         loadItems();
     }, []);
 
@@ -234,7 +236,7 @@ export default function App() {
     const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
     const renderPageContent = () => {
-        if (!token) {
+        if (!token && currentPage !== 'admin') {
             return <AuthPage onLoginSuccess={handleLoginSuccess} />;
         }
 
@@ -296,6 +298,15 @@ export default function App() {
                 return <AboutPage />;
             case 'contact':
                 return <ContactPage />;
+            case 'admin':
+                return (
+                    <AdminPage 
+                        token={token}
+                        items={items}
+                        onBack={() => setCurrentPage('items')}
+                        onRefreshItems={loadItems}
+                    />
+                );
             default:
                 return (
                     <HomePage 
@@ -332,7 +343,12 @@ export default function App() {
             <footer className="footer">
                 <div className="footer-content">
                     <p>&copy; {new Date().getFullYear()} Trendify. All rights reserved.</p>
-                    <p>Designed and developed with ❤️ resembling premium fashion portal experience</p>
+                    <p>
+                        Designed and developed with ❤️ resembling premium fashion portal experience | 
+                        <a href="#" onClick={(e) => { e.preventDefault(); setCurrentPage('admin'); }} style={{ color: 'var(--theme-primary)', marginLeft: '8px', textDecoration: 'underline', fontWeight: '700' }}>
+                            Open Admin Panel Demo
+                        </a>
+                    </p>
                 </div>
             </footer>
         </div>

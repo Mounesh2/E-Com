@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trendify | Vendor Admin Portal</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-container" class="auth-wrapper">
+        <div class="auth-card glass-panel animate-fade-in">
+            <div class="auth-header">
+                <div class="logo-badge">🛍️</div>
+                <h2>Trendify</h2>
+                <p>Vendor Control Center</p>
+            </div>
+            
+            <!-- LOGIN FORM -->
+            <form id="login-form">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-envelope"></i> Email Address</label>
+                    <input type="email" id="login-email" placeholder="admin@gmail.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label><i class="fa-solid fa-lock"></i> Password</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" id="login-password" placeholder="••••••••" required>
+                    </div>
+                </div>
+                
+                <div id="login-error" class="error-banner hidden"></div>
+                
+                <button type="submit" class="btn-auth">
+                    <span>Log In to Dashboard</span>
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+                
+                <div class="auth-toggle-link" style="text-align: center; margin-top: 16px; font-size: 0.85rem;">
+                    Don't have an admin account? <a href="#" id="link-to-register" style="color: var(--accent-indigo); text-decoration: none; font-weight: 700;">Register here</a>
+                </div>
+            </form>
+
+            <!-- REGISTER FORM -->
+            <form id="register-form" class="hidden">
+                <div class="form-group">
+                    <label><i class="fa-solid fa-envelope"></i> Email Address</label>
+                    <input type="email" id="register-email" placeholder="admin@gmail.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-user"></i> Full Name</label>
+                    <input type="text" id="register-name" placeholder="John Doe" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-phone"></i> Phone Number</label>
+                    <input type="text" id="register-phone" placeholder="9999999999" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-lock"></i> Password</label>
+                    <input type="password" id="register-password" placeholder="••••••••" required>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fa-solid fa-location-dot"></i> Address</label>
+                    <input type="text" id="register-address" placeholder="123 Main St, City">
+                </div>
+
+                <div id="register-error" class="error-banner hidden"></div>
+                <div id="register-success" class="success-banner hidden" style="background: rgba(16, 185, 129, 0.15); border: 1px solid var(--accent-emerald); color: #a7f3d0; padding: 12px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 20px; text-align: center; font-weight: 500;"></div>
+
+                <button type="submit" class="btn-auth">
+                    <span>Register Admin Account</span>
+                    <i class="fa-solid fa-user-plus"></i>
+                </button>
+
+                <div class="auth-toggle-link" style="text-align: center; margin-top: 16px; font-size: 0.85rem;">
+                    Already have an account? <a href="#" id="link-to-login" style="color: var(--accent-indigo); text-decoration: none; font-weight: 700;">Log in here</a>
+                </div>
+            </form>
+            <div class="auth-footer">
+                <p>Protected by HMAC signature verification & JWT security</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN DASHBOARD LAYOUT -->
+    <div id="dashboard-container" class="dashboard-wrapper hidden">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <span class="brand-logo">🛍️</span>
+                <div class="brand-text">
+                    <h1>Trendify</h1>
+                    <span>Admin Portal</span>
+                </div>
+            </div>
+            
+            <ul class="sidebar-menu">
+                <li class="menu-item active" data-tab="tab-overview">
+                    <a href="#"><i class="fa-solid fa-chart-pie"></i> <span>Overview</span></a>
+                </li>
+                <li class="menu-item" data-tab="tab-products">
+                    <a href="#"><i class="fa-solid fa-boxes-stacked"></i> <span>Products List</span></a>
+                </li>
+                <li class="menu-item" data-tab="tab-add-product">
+                    <a href="#"><i class="fa-solid fa-circle-plus"></i> <span>Add Product</span></a>
+                </li>
+            </ul>
+            
+            <div class="sidebar-user">
+                <div class="user-avatar"><i class="fa-solid fa-circle-user"></i></div>
+                <div class="user-info">
+                    <h4 id="user-name">Loading...</h4>
+                    <span id="user-email">...</span>
+                </div>
+                <button id="btn-logout" class="logout-btn" title="Log Out"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="main-content">
+            
+            <!-- HEADER -->
+            <header class="content-header">
+                <div class="header-title">
+                    <h2 id="page-title">Overview</h2>
+                    <p id="page-subtitle">Real-time statistics and product metrics.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn-refresh" id="btn-refresh-data"><i class="fa-solid fa-rotate"></i> Sync Data</button>
+                </div>
+            </header>
+
+            <!-- TAB 1: OVERVIEW -->
+            <section id="tab-overview" class="tab-content">
+                <!-- Counters Row -->
+                <div class="stats-grid">
+                    <div class="stat-card glass-panel">
+                        <div class="stat-card-header">
+                            <span class="stat-title">Total Products</span>
+                            <span class="stat-icon-wrapper blue"><i class="fa-solid fa-box"></i></span>
+                        </div>
+                        <h3 id="stat-total-products" class="stat-value">0</h3>
+                        <p class="stat-desc">Active catalog inventory</p>
+                    </div>
+
+                    <div class="stat-card glass-panel">
+                        <div class="stat-card-header">
+                            <span class="stat-title">Catalog Worth</span>
+                            <span class="stat-icon-wrapper green"><i class="fa-solid fa-indian-rupee-sign"></i></span>
+                        </div>
+                        <h3 id="stat-total-value" class="stat-value">₹0</h3>
+                        <p class="stat-desc">Sum value of list prices</p>
+                    </div>
+
+                    <div class="stat-card glass-panel">
+                        <div class="stat-card-header">
+                            <span class="stat-title">Bestsellers</span>
+                            <span class="stat-icon-wrapper orange"><i class="fa-solid fa-fire"></i></span>
+                        </div>
+                        <h3 id="stat-bestsellers" class="stat-value">0</h3>
+                        <p class="stat-desc">Promoted landing items</p>
+                    </div>
+
+                    <div class="stat-card glass-panel">
+                        <div class="stat-card-header">
+                            <span class="stat-title">Categories</span>
+                            <span class="stat-icon-wrapper purple"><i class="fa-solid fa-tags"></i></span>
+                        </div>
+                        <h3 id="stat-categories" class="stat-value">0</h3>
+                        <p class="stat-desc">Active inventory filters</p>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-row">
+                    <div class="chart-container glass-panel">
+                        <h3><i class="fa-solid fa-chart-simple"></i> Product Category Distribution</h3>
+                        <div class="canvas-wrapper">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: PRODUCTS TABLE LIST -->
+            <section id="tab-products" class="tab-content hidden">
+                <div class="panel-card glass-panel">
+                    <div class="panel-card-header">
+                        <h3>Catalog Manager</h3>
+                        <div class="search-bar">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="search-input" placeholder="Search by name, category, ID...">
+                        </div>
+                    </div>
+
+                    <div class="table-scroll-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Preview</th>
+                                    <th>Product ID</th>
+                                    <th>Product Details</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Discount</th>
+                                    <th>Bestseller</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-table-body">
+                                <!-- JavaScript will inject rows here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: ADD PRODUCT FORM -->
+            <section id="tab-add-product" class="tab-content hidden">
+                <div class="form-card glass-panel">
+                    <h3>Add New Catalog Item</h3>
+                    <p class="section-subtitle">Ensure fields conform to REST validation structures.</p>
+                    
+                    <form id="add-product-form" class="portal-form">
+                        <div class="form-group-full">
+                            <label>Product Name <span class="required">*</span></label>
+                            <input type="text" id="add-name" placeholder="e.g. MacBook Pro M3" required>
+                        </div>
+
+                        <div class="form-row-3">
+                            <div class="form-group">
+                                <label>Selling Price (₹) <span class="required">*</span></label>
+                                <input type="number" step="0.01" id="add-price" placeholder="e.g. 999" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Original Price (₹)</label>
+                                <input type="number" step="0.01" id="add-original-price" placeholder="e.g. 1299">
+                            </div>
+                            <div class="form-group">
+                                <label>Discount (%)</label>
+                                <input type="number" id="add-discount" placeholder="e.g. 23">
+                            </div>
+                        </div>
+
+                        <div class="form-row-2">
+                            <div class="form-group">
+                                <label>Category <span class="required">*</span></label>
+                                <select id="add-category">
+                                    <option value="Clothing">Clothing</option>
+                                    <option value="Electronics">Electronics</option>
+                                    <option value="Books">Books</option>
+                                    <option value="Other">Other (Enter below)</option>
+                                </select>
+                            </div>
+                            <div class="form-group hidden" id="custom-category-group">
+                                <label>Custom Category Name <span class="required">*</span></label>
+                                <input type="text" id="add-custom-category" placeholder="e.g. Footwear">
+                            </div>
+                        </div>
+
+                        <div class="form-group-full">
+                            <label>Main Image URL <span class="required">*</span></label>
+                            <input type="url" id="add-image" placeholder="https://unsplash.com/photos/..." required>
+                        </div>
+
+                        <div class="form-group-full">
+                            <label>Additional Image URLs (Comma-separated)</label>
+                            <textarea id="add-additional-images" placeholder="https://url1.jpg, https://url2.jpg" rows="2"></textarea>
+                        </div>
+
+                        <div class="form-group-full">
+                            <label>Product Description <span class="required">*</span></label>
+                            <textarea id="add-description" placeholder="Write description specifications, sizing details, material types..." rows="4" required></textarea>
+                        </div>
+
+                        <div class="form-group-checkbox">
+                            <label class="switch-label">
+                                <input type="checkbox" id="add-bestseller">
+                                <span class="switch-slider"></span>
+                                <span class="switch-text">Mark as Bestseller item</span>
+                            </label>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" id="btn-add-clear" class="btn-secondary">Clear Fields</button>
+                            <button type="submit" class="btn-primary">Create Product</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- PRODUCT EDIT MODAL -->
+    <div id="edit-modal" class="modal-overlay hidden">
+        <div class="modal-card glass-panel">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-pen-to-square"></i> Edit Catalog Product</h3>
+                <button class="close-modal-btn" id="btn-close-modal">✕</button>
+            </div>
+            
+            <form id="edit-product-form" class="portal-form">
+                <input type="hidden" id="edit-id">
+                
+                <div class="form-group-full">
+                    <label>Product Name <span class="required">*</span></label>
+                    <input type="text" id="edit-name" required>
+                </div>
+
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>Selling Price (₹) <span class="required">*</span></label>
+                        <input type="number" step="0.01" id="edit-price" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Original Price (₹)</label>
+                        <input type="number" step="0.01" id="edit-original-price">
+                    </div>
+                    <div class="form-group">
+                        <label>Discount (%)</label>
+                        <input type="number" id="edit-discount">
+                    </div>
+                </div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label>Category <span class="required">*</span></label>
+                        <select id="edit-category">
+                            <option value="Clothing">Clothing</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Books">Books</option>
+                            <option value="Other">Other (Enter below)</option>
+                        </select>
+                    </div>
+                    <div class="form-group hidden" id="edit-custom-category-group">
+                        <label>Custom Category Name <span class="required">*</span></label>
+                        <input type="text" id="edit-custom-category">
+                    </div>
+                </div>
+
+                <div class="form-group-full">
+                    <label>Main Image URL <span class="required">*</span></label>
+                    <input type="url" id="edit-image" required>
+                </div>
+
+                <div class="form-group-full">
+                    <label>Additional Image URLs (Comma-separated)</label>
+                    <textarea id="edit-additional-images" rows="2"></textarea>
+                </div>
+
+                <div class="form-group-full">
+                    <label>Product Description <span class="required">*</span></label>
+                    <textarea id="edit-description" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group-checkbox">
+                    <label class="switch-label">
+                        <input type="checkbox" id="edit-bestseller">
+                        <span class="switch-slider"></span>
+                        <span class="switch-text">Mark as Bestseller item</span>
+                    </label>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" id="btn-edit-cancel" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
