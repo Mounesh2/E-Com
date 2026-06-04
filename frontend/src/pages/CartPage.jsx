@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../config';
 
 // Helper to generate mock payment IDs outside of rendering flow
 const generateMockPaymentId = () => {
@@ -52,7 +53,7 @@ export default function CartPage({ cart, onRemoveItem, token, onCheckoutSuccess 
         setCheckingOut(true);
 
         try {
-            const response = await fetch('http://localhost:8000/api/checkout/create-order', {
+            const response = await fetch(`${API_BASE_URL}/api/checkout/create-order`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -128,7 +129,7 @@ export default function CartPage({ cart, onRemoveItem, token, onCheckoutSuccess 
 
     const verifyPayment = async (paymentRes) => {
         try {
-            const res = await fetch('http://localhost:8000/api/checkout/verify-payment', {
+            const res = await fetch(`${API_BASE_URL}/api/checkout/verify-payment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -158,7 +159,7 @@ export default function CartPage({ cart, onRemoveItem, token, onCheckoutSuccess 
 
     const simulatePaymentVerification = async (orderId, paymentId) => {
         try {
-            const res = await fetch('http://localhost:8000/api/checkout/verify-payment', {
+            const res = await fetch(`${API_BASE_URL}/api/checkout/verify-payment`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

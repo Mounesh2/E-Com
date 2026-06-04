@@ -11,6 +11,7 @@ import WishlistPage from './pages/WishlistPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import AdminPage from './pages/AdminPage';
+import { API_BASE_URL } from './config';
 
 export default function App() {
     const [token, setToken] = useState(() => localStorage.getItem('token'));
@@ -39,7 +40,7 @@ export default function App() {
 
     const loadItems = async () => {
         try {
-            const response = await fetch('http://localhost:8000/api/items');
+            const response = await fetch(`${API_BASE_URL}/api/items`);
             if (response.ok) {
                 const data = await response.json();
                 setItems(data);
@@ -59,7 +60,7 @@ export default function App() {
         const fetchUserProfile = async (currentToken) => {
             if (!currentToken) return;
             try {
-                const response = await fetch('http://localhost:8000/api/profile', {
+                const response = await fetch(`${API_BASE_URL}/api/profile`, {
                     headers: { 'Authorization': `Bearer ${currentToken}` }
                 });
                 if (response.ok) {
@@ -76,7 +77,7 @@ export default function App() {
         const loadCart = async (currentToken) => {
             if (!currentToken) return;
             try {
-                const response = await fetch('http://localhost:8000/api/cart', {
+                const response = await fetch(`${API_BASE_URL}/api/cart`, {
                     headers: { 'Authorization': `Bearer ${currentToken}` }
                 });
                 if (response.ok) {
@@ -91,7 +92,7 @@ export default function App() {
         const loadWishlist = async (currentToken) => {
             if (!currentToken) return;
             try {
-                const response = await fetch('http://localhost:8000/api/wishlist', {
+                const response = await fetch(`${API_BASE_URL}/api/wishlist`, {
                     headers: { 'Authorization': `Bearer ${currentToken}` }
                 });
                 if (response.ok) {
@@ -130,7 +131,7 @@ export default function App() {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/api/cart', {
+            const response = await fetch(`${API_BASE_URL}/api/cart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -155,7 +156,7 @@ export default function App() {
 
     const handleRemoveFromCart = async (itemId) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/cart/${itemId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/cart/${itemId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -176,7 +177,7 @@ export default function App() {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/api/wishlist', {
+            const response = await fetch(`${API_BASE_URL}/api/wishlist`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -197,7 +198,7 @@ export default function App() {
 
     const handleRemoveFromWishlist = async (itemId) => {
         try {
-            const response = await fetch(`http://localhost:8000/api/wishlist/${itemId}`, {
+            const response = await fetch(`${API_BASE_URL}/api/wishlist/${itemId}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

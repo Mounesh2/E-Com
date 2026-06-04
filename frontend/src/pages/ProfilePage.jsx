@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 export default function ProfilePage({ token, onBack }) {
     const [profile, setProfile] = useState(null);
@@ -9,7 +10,7 @@ export default function ProfilePage({ token, onBack }) {
         const fetchProfileAndOrders = async () => {
             try {
                 // Fetch profile details
-                const profileRes = await fetch('http://localhost:8000/api/profile', {
+                const profileRes = await fetch(`${API_BASE_URL}/api/profile`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
@@ -19,7 +20,7 @@ export default function ProfilePage({ token, onBack }) {
                 }
 
                 // Fetch recent orders
-                const ordersRes = await fetch('http://localhost:8000/api/orders', {
+                const ordersRes = await fetch(`${API_BASE_URL}/api/orders`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
 

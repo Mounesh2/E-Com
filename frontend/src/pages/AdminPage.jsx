@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 export default function AdminPage({ token, onBack, onRefreshItems, items }) {
     const [activeTab, setActiveTab] = useState('list'); // 'list' or 'add'
@@ -110,7 +111,7 @@ export default function AdminPage({ token, onBack, onRefreshItems, items }) {
         };
 
         try {
-            const res = await fetch('http://localhost:8000/api/items', {
+            const res = await fetch(`${API_BASE_URL}/api/items`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -170,7 +171,7 @@ export default function AdminPage({ token, onBack, onRefreshItems, items }) {
         };
 
         try {
-            const res = await fetch(`http://localhost:8000/api/items/${editingProduct.id}`, {
+            const res = await fetch(`${API_BASE_URL}/api/items/${editingProduct.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -199,7 +200,7 @@ export default function AdminPage({ token, onBack, onRefreshItems, items }) {
         if (!confirmDelete) return;
 
         try {
-            const res = await fetch(`http://localhost:8000/api/items/${productId}`, {
+            const res = await fetch(`${API_BASE_URL}/api/items/${productId}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

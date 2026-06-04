@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../config';
 
 export default function AuthPage({ onLoginSuccess }) {
     const [isLogin, setIsLogin] = useState(true);
@@ -32,7 +33,7 @@ export default function AuthPage({ onLoginSuccess }) {
             : { email, password, fullName, phone, address };
 
         try {
-            const response = await fetch(`http://localhost:8000${endpoint}`, {
+            const response = await fetch(`${API_BASE_URL}${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(requestBody),

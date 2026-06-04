@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 import ItemCard from '../components/ItemCard';
 
 export default function ProductDetailPage({ itemId, onAddToCart, onShowDetail, onBack, onAddToWishlist }) {
@@ -13,11 +14,11 @@ export default function ProductDetailPage({ itemId, onAddToCart, onShowDetail, o
         const fetchProductDetail = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`http://localhost:8000/api/items/${itemId}`);
+                const response = await fetch(`${API_BASE_URL}/api/items/${itemId}`);
                 const data = await response.json();
                 setItem(data);
 
-                const allResponse = await fetch('http://localhost:8000/api/items');
+                const allResponse = await fetch(`${API_BASE_URL}/api/items`);
                 const allItems = await allResponse.json();
                 const related = allItems
                     .filter(i => i.category === data.category && i.id !== data.id)

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 import ItemCard from '../components/ItemCard';
 
 export default function ProductsPage({ 
@@ -17,7 +18,7 @@ export default function ProductsPage({
     // Reload products when filters or search queries change
     useEffect(() => {
         const loadProducts = async () => {
-            let url = 'http://localhost:8000/api/items?';
+            let url = `${API_BASE_URL}/api/items?`;
             if (selectedCategory) url += `category=${selectedCategory}&`;
             if (minPrice) url += `minPrice=${minPrice}&`;
             if (maxPrice) url += `maxPrice=${maxPrice}&`;

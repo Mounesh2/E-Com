@@ -2,7 +2,7 @@
 // CLIENT LOGIC: Trendify Standalone Admin Portal
 // ==========================================
 
-const API_BASE_URL = 'http://localhost:8000/api';
+let API_BASE_URL = localStorage.getItem('TRENDIFY_ADMIN_API_URL') || 'http://localhost:8000/api';
 
 // Application State
 let token = localStorage.getItem('token') || null;
@@ -41,6 +41,12 @@ const registerSuccess = document.getElementById('register-success');
 
 const linkToRegister = document.getElementById('link-to-register');
 const linkToLogin = document.getElementById('link-to-login');
+
+// DOM Elements - API Configuration
+const apiConfigForm = document.getElementById('api-config-form');
+const apiBaseUrlInput = document.getElementById('api-base-url-input');
+const linkConfigureApi = document.getElementById('link-configure-api');
+const linkBackToLogin = document.getElementById('link-back-to-login');
 
 // DOM Elements - Stats
 const statTotalProducts = document.getElementById('stat-total-products');
@@ -119,6 +125,39 @@ function setupEventListeners() {
         registerError.classList.add('hidden');
         registerSuccess.classList.add('hidden');
     });
+
+    // API configuration toggle event listeners
+    if (linkConfigureApi) {
+        linkConfigureApi.addEventListener('click', (e) => {
+            e.preventDefault();
+            loginForm.classList.add('hidden');
+            registerForm.classList.add('hidden');
+            apiConfigForm.classList.remove('hidden');
+            apiBaseUrlInput.value = API_BASE_URL;
+        });
+    }
+
+    if (linkBackToLogin) {
+        linkBackToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            apiConfigForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+        });
+    }
+
+    if (apiConfigForm) {
+        apiConfigForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const inputVal = apiBaseUrlInput.value.trim();
+            if (inputVal) {
+                API_BASE_URL = inputVal;
+                localStorage.setItem('TRENDIFY_ADMIN_API_URL', inputVal);
+                alert('API Configuration saved successfully!');
+                apiConfigForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+            }
+        });
+    }
 
     registerForm.addEventListener('submit', handleRegister);
 
