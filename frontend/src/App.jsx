@@ -237,7 +237,13 @@ export default function App() {
     const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
     const renderPageContent = () => {
-        if (!token && currentPage !== 'admin') {
+        // Pages that require login
+        const authRequiredPages = ['cart', 'profile', 'wishlist'];
+        if (!token && authRequiredPages.includes(currentPage)) {
+            return <AuthPage onLoginSuccess={handleLoginSuccess} />;
+        }
+        // Show auth page when user clicks Login button
+        if (currentPage === 'auth') {
             return <AuthPage onLoginSuccess={handleLoginSuccess} />;
         }
 

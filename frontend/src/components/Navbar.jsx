@@ -41,8 +41,7 @@ export default function Navbar({
                     <div className="nav-brand" onClick={(e) => handlePageNavigation('items', e)}>
                         🛍️ Trendify
                     </div>
-                    {user && (
-                        <ul className="nav-links">
+                    <ul className="nav-links">
                             <li>
                                 <a 
                                     href="#" 
@@ -85,12 +84,10 @@ export default function Navbar({
                                 </a>
                             </li>
                         </ul>
-                    )}
                 </div>
 
                 {/* Search Bar - Center aligned */}
-                {user && (
-                    <div className="nav-search-container" style={{ position: 'relative' }}>
+                <div className="nav-search-container" style={{ position: 'relative' }}>
                         <span className="nav-search-icon">🔍</span>
                         <input 
                             type="text" 
@@ -124,7 +121,6 @@ export default function Navbar({
                             </div>
                         )}
                     </div>
-                )}
 
                 <div className="nav-right">
                     {user ? (
@@ -196,8 +192,22 @@ export default function Navbar({
                             </div>
                         </div>
                     ) : (
-                        <div className="nav-brand" style={{ margin: '0 auto' }}>
-                            🛍️ Trendify
+                        <div className="nav-user-actions">
+                            <div 
+                                className="nav-action-item"
+                                onClick={(e) => handlePageNavigation('auth', e)}
+                                style={{ cursor: 'pointer' }}
+                            >
+                                <span className="nav-action-icon">👤</span>
+                                <span>Login</span>
+                            </div>
+                            <div 
+                                className="nav-action-item" 
+                                onClick={(e) => handlePageNavigation('cart', e)}
+                            >
+                                <span className="nav-action-icon">👜</span>
+                                <span>Bag</span>
+                            </div>
                         </div>
                     )}
                 </div>
