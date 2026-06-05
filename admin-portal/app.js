@@ -2,7 +2,9 @@
 // CLIENT LOGIC: Trendify Standalone Admin Portal
 // ==========================================
 
-let API_BASE_URL = localStorage.getItem('TRENDIFY_ADMIN_API_URL') || 'http://localhost:8000/api';
+// Default to Render deployed backend; override via "Configure Backend API" link
+const DEFAULT_API_URL = 'https://trendify-backend.onrender.com/api';
+let API_BASE_URL = localStorage.getItem('TRENDIFY_ADMIN_API_URL') || DEFAULT_API_URL;
 
 // Application State
 let token = localStorage.getItem('token') || null;
